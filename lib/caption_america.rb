@@ -3,9 +3,15 @@
 #
 module CaptionAmerica
   class InvalidTimestampError < StandardError; end
+  class InvalidCaptionFormatError < StandardError; end
 
-  def self.read(filepath)
-    contents = File.read(filepath)
+  def self.read(filepath, type)
+    reader = case type
+    when :vtt, :webvtt
+      WebVTT
+    else
+      raise InvalidCaptionFormatError
+    end
 
     contents
   end

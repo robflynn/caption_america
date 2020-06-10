@@ -1,6 +1,12 @@
 require_relative './spec_helper'
 
 describe 'CaptionAmerica' do
+  it 'should throw invalid caption format error' do
+    error = -> {
+      CaptionAmerica.read("test.caption", :invalid_format)
+    }.must_raise CaptionAmerica::InvalidCaptionFormatError
+  end
+
   describe 'TimeStone' do
     it 'should convert a timecode to frames' do
       frames = CaptionAmerica::TimeStone.to_frames("00:00:00:17")
