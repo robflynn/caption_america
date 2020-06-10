@@ -1,6 +1,5 @@
 module CaptionAmerica
-  module TimeStone
-
+  class CueTime
     TIMESTAMP_REGEXES = [
       /^(?<hours>\d{2})[:,;](?<minutes>\d{2})[:,;](?<seconds>\d{2})[:,;](?<frames>\d{2})$/,
       /^(?<hours>\d{2})[:,;](?<minutes>\d{2})[:,;](?<seconds>\d{2})$/,
@@ -9,19 +8,17 @@ module CaptionAmerica
 
     DEFAULT_FPS = 29.97
 
-    class CueTime
-      attr_accessor :hours, :minutes, :seconds, :milliseconds, :frames
+    attr_accessor :hours, :minutes, :seconds, :milliseconds, :frames
 
-      def initialize
-        @hours = 0
-        @mintes = 0
-        @seconds = 0
-        @milliseconds = 0
-        @frames = 0
-      end
+    def initialize
+      @hours = 0
+      @mintes = 0
+      @seconds = 0
+      @milliseconds = 0
+      @frames = 0
     end
 
-    def self.parse_cue(timecode)
+    def self.parse(timecode)
       TIMESTAMP_REGEXES.each do |regex|
         match = timecode.match regex
 
@@ -32,7 +29,7 @@ module CaptionAmerica
     end
 
     def self.to_milliseconds(timecode, fps: DEFAULT_FPS)
-      cue = self.parse_cue(timecode)
+      cue = self.parse(timecode)
 
       ms = (cue.frames.to_f / fps) * 1000
       ms += cue.milliseconds
@@ -44,7 +41,7 @@ module CaptionAmerica
     end
 
     def self.to_frames(timecode, drop_frame: true, fps: DEFAULT_FPS)
-      cue = self.parse_cue(timecode)
+      cue = self.parse(timecode)
 
       drop_frames = (fps * 0.066666).round
       time_base = fps.round

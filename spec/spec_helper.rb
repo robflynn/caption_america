@@ -6,4 +6,8 @@ require "minitest/pride"
 require "caption_america"
 
 class MiniTest::Spec
+  def fixture(path)
+    path = File.join(File.dirname(__FILE__), 'fixtures', path)
+    File.open(path)
+  end
 end
