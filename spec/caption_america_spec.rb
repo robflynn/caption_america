@@ -2,9 +2,7 @@ require_relative './spec_helper'
 
 describe 'CaptionAmerica' do
   it 'should throw invalid caption format error' do
-    error = -> {
-      CaptionAmerica.read("test.caption", :invalid_format)
-    }.must_raise CaptionAmerica::InvalidCaptionFormatError
+    expect { CaptionAmerica.read("test.caption", :invalid_format) }.must_raise CaptionAmerica::InvalidCaptionFormatError
   end
 
   describe 'captions' do
@@ -51,9 +49,7 @@ describe 'CaptionAmerica' do
 
     describe 'parsing invalid timecode' do
       it 'should raise InvalidTimestampError' do
-        error = -> {
-          CaptionAmerica::CueTime.to_milliseconds("bananas")
-        }.must_raise CaptionAmerica::InvalidTimestampError
+        expect { CaptionAmerica::CueTime.to_milliseconds("bananas") }.must_raise CaptionAmerica::InvalidTimestampError
       end
     end
   end
