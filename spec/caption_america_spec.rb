@@ -14,6 +14,12 @@ describe 'CaptionAmerica' do
       assert_equal(10, frames)
     end
 
+    it 'should convert a timecode to frames using non-drop' do
+      frames = CaptionAmerica::TimeStone.to_frames("00:23:13:00", drop_frame: true)
+
+      assert_equal(41750, frames)
+    end
+
     it 'should convert timecodes in the format of HH:MM:SS.MMM to milliseconds' do
       ms = CaptionAmerica::TimeStone.to_milliseconds("00:00:01.250")
       assert_equal(1250, ms)

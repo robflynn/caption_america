@@ -43,26 +43,31 @@ module CaptionAmerica
       ms.round
     end
 
-    def self.to_frames(timecode, drop_frame: false, fps: DEFAULT_FPS)
+    def self.to_frames(timecode, drop_frame: true, fps: DEFAULT_FPS)
       cue = self.parse_cue(timecode)
 
-      # milliseconds or frames should be zero (one or the other), so we'll
-      # just calculate boh
-      seconds = cue.seconds
-      seconds += cue.minutes * 60
-      seconds += cue.hours * 60 * 60
-      #seconds += cue.milliseconds.round
+      drop_frames = (fps * 0.066666).round
+      time_base = fps.round
 
-      total_frames = (seconds * fps) + cue.frames
-
-      if drop_frame
-        total_minutes = (cue.hours * 60) + cue.minutes
-
-        frames_to_drop = (0...total_minutes).to_a.map { |i| i if i % 10 != 0 }.compact!.size * 2
-        total_frames = total_frames - frames_to_drop
+      # let's convert milliseconds to frames if that's what we're working with
+      # frames are more common so we'll let milliseconds ovverride
+      normalized_frames = cue.frames
+      if cue.milliseconds > 0
+        normalized_frames = ((cue.milliseconds / 1000) * fps).round
       end
 
-      return total_frames
+      hour_frames = time_base * 60 * 60
+      minute_frames = time_base * 60
+      total_minutes = (60 * cue.hours) + cue.minutes
+      frame_number = ((hour_frames * cue.hours) +
+                      (minute_frames * cue.minutes) +
+                      (time_base * cue.seconds) + normalized_frames)
+
+      if drop_frame
+        frame_number -= drop_frames * (total_minutes - (total_minutes % 10))
+      end
+
+      return frame_number
     end
 
 private
