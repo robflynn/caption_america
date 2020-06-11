@@ -1,7 +1,7 @@
 module CaptionAmerica
   class Caption
     # Cue Timing
-    attr_accessor :start_time, :end_time
+    attr_accessor :in_time, :out_time
 
     # Payload
     attr_accessor :text
@@ -15,12 +15,8 @@ module CaptionAmerica
     attr_accessor :bold, :italic, :underline
     attr_accessor :font, :font_size
 
-    def in
-      start_time
-    end
-
-    def out
-      end_time
+    def initialize
+      @text = ""
     end
   end
 end

@@ -18,14 +18,22 @@ module CaptionAmerica
       @frames = 0
     end
 
-    def self.parse(timecode)
+    def self.timestamp_match?(timecode)
       TIMESTAMP_REGEXES.each do |regex|
-        match = timecode.match regex
+        matched = timecode.match regex
 
-        return timecode_regex_match_to_cue_time(match) if match
+        return matched if matched
       end
 
-      raise InvalidTimestampError
+      false
+    end
+
+    def self.parse(timecode)
+      matched = timestamp_match?(timecode)
+
+      raise InvalidTimestampError unless matched
+
+      return timecode_regex_match_to_cue_time(matched)
     end
 
     def self.to_milliseconds(timecode, fps: DEFAULT_FPS)

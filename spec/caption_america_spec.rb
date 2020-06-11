@@ -9,7 +9,9 @@ describe 'CaptionAmerica' do
     it 'should be able to read a valid caption file' do
       captions = CaptionAmerica.read(fixture('webvtt.vtt'), :vtt)
 
-      assert_equal(1, captions.count)
+      assert_equal(2, captions.count)
+
+      assert_equal("test caption", captions[0].text)
     end
   end
 
