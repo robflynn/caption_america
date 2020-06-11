@@ -1,6 +1,6 @@
-#
-# Many Captions! Handle It!
-#
+require 'bindata'
+
+
 module CaptionAmerica
   class InvalidTimestampError < StandardError; end
   class InvalidCaptionFormatError < StandardError; end
@@ -90,6 +90,8 @@ private
     reader = case type
     when :vtt, :webvtt
       WebVTT
+    when :caption_maker, :captionmaker, :cap
+      CaptionMaker
     else
       raise InvalidCaptionFormatError
     end
@@ -101,5 +103,6 @@ private
 end
 
 require 'caption_america/version'
-require 'caption_america/cue_time.rb'
+require 'caption_america/cue_time'
 require 'caption_america/caption'
+require 'caption_america/caption_maker'

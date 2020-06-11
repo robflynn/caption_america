@@ -5,6 +5,18 @@ describe 'CaptionAmerica' do
     expect { CaptionAmerica.read("test.caption", :invalid_format) }.must_raise CaptionAmerica::InvalidCaptionFormatError
   end
 
+  describe 'CaptionMaker' do
+    it 'should be able to read a caption maker file' do
+      captions = CaptionAmerica.read(fixture('captionmaker.cap'), :caption_maker)
+
+      assert_equal(3, captions.count)
+    end
+
+    it 'should be throw an invalid format error when given an invalid file' do
+      expect { CaptionAmerica.read(fixture('webvtt.vtt', :caption_maker)).must_raise CaptionAmerica::InvalidCaptionFileError }
+    end
+  end
+
   describe 'captions' do
     it 'should be able to read a valid caption file' do
       captions = CaptionAmerica.read(fixture('webvtt.vtt'), :vtt)
