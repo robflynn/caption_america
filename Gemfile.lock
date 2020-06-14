@@ -13,6 +13,7 @@ GEM
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (10.5.0)
+    ruby-rtf (0.0.5)
 
 PLATFORMS
   ruby
@@ -25,6 +26,7 @@ DEPENDENCIES
   minitest
   rack-test
   rake (~> 10.0)
+  ruby-rtf
 
 BUNDLED WITH
    1.17.3

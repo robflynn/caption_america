@@ -1,4 +1,15 @@
 require 'hex_string'
+require 'ruby-rtf'
+
+def suppress_output
+  original_stdout, original_stderr = $stdout.clone, $stderr.clone
+  $stderr.reopen File.new('/dev/null', 'w')
+  $stdout.reopen File.new('/dev/null', 'w')
+  yield
+ensure
+  $stdout.reopen original_stdout
+  $stderr.reopen original_stderr
+end
 
 class String
   def scan_with_captures(regexp)
@@ -57,6 +68,7 @@ module CaptionAmerica
           next
         end
 
+        #puts "CHECKING: #{match["block"]}"
         captions << parse_subtitle_record(match["block"])
       end
 
@@ -67,6 +79,71 @@ module CaptionAmerica
 
     def self.parse_subtitle_record(hex_string)
       buffer = HexStringByteBuffer.new(hex_string)
+
+      # Skip the four byte structure identifier 0x00fffeff
+      buffer.skip(:uint8, count: 4)
+
+
+      # Get the length of the text, this will always be 11
+      len = buffer.uint8
+      in_time = buffer.uint16(count: len).map(&:chr).join
+      attributes = {
+        position: buffer.float32,
+        line: buffer.float32,
+        justification: buffer.uint16,
+        font_style: buffer.uint16
+      }
+
+      # Get the length of the caption block. If >= 255 the value will
+      # be followed by a uint16 representing an extended length. This
+      # extended text will also frequently be in rtf format.
+      len = buffer.uint8
+      if len == 0xff
+        len = buffer.uint16
+      end
+
+      # The caption text, unliked the timecode, is stored as an array of bytes
+      raw_text = buffer.uint8(count: len)
+                           .map(&:chr)
+                           .join
+
+      caption_text = self.normalized_text(raw_text)
+
+      # Assemble the cue data
+      cue_data = {
+        in_time: in_time,
+        attributes: attributes,
+        text: caption_text,
+        raw_text: raw_text
+      }
+
+      return build_caption(cue_data)
+    end
+
+    def self.build_caption(cue_data)
+      Caption.new.tap do |c|
+        c.in_time = cue_data[:in_time]
+        c.text = cue_data[:text]
+        c.horizontal = cue_data[:position]
+        c.vertical = cue_data[:line]
+      end
+    end
+
+    def self.normalized_text(text)
+      response = text.strip
+
+      return response unless response.include? "{\\rtf1"
+
+      doc = suppress_output { ::RubyRTF::Parser.new.parse(response) }
+
+
+      # Reset the response and iterate
+      response = ""
+      doc.sections.each do |section|
+        response = response + section[:text]
+      end
+
+      return response
     end
 
   end
