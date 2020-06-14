@@ -17,7 +17,7 @@ module CaptionAmerica
 
     def self.generate_chunk(caption)
       vtt_chunk = <<~VTT
-      #{caption.in_time} --> #{caption.out_time}
+      #{caption.in_time} --> #{caption.out_time} #{caption_block_header(caption)}
       #{caption.text}
 
       VTT
@@ -86,6 +86,14 @@ module CaptionAmerica
     end
 
   private
+
+    def self.caption_block_header(caption)
+      header = []
+
+
+
+      header.join(' ')
+    end
 
     def self.is_caption_block_header?(line)
       return false unless line.include? "-->"
