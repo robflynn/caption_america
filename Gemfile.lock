@@ -7,6 +7,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     bindata (1.8.3)
+    hex_string (1.0.1)
     minitest (5.14.1)
     rack (2.2.2)
     rack-test (1.1.0)
@@ -20,6 +21,7 @@ DEPENDENCIES
   bindata (~> 1.8.0)
   bundler (~> 1.7)
   caption_america!
+  hex_string
   minitest
   rack-test
   rake (~> 10.0)

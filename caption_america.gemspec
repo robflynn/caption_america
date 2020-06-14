@@ -22,5 +22,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", "~> 10.0"
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'rack-test'
+  s.add_development_dependency 'hex_string'
   s.add_development_dependency 'bindata', '~> 1.8.0'
 end

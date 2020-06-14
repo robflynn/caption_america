@@ -92,6 +92,8 @@ private
       WebVTT
     when :caption_maker, :captionmaker, :cap
       CaptionMaker
+    when :caption_maker_v8, :captionmaker_v8, :cap_v8
+      CaptionMakerV8
     else
       raise InvalidCaptionFormatError
     end
@@ -103,6 +105,7 @@ private
 end
 
 require 'caption_america/version'
+require 'caption_america/hex_string_byte_buffer'
 require 'caption_america/cue_time'
 require 'caption_america/caption'
-require 'caption_america/caption_maker'
+require 'caption_america/adapters/caption_maker_v8/caption_maker_v8'

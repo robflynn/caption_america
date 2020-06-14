@@ -1,19 +1,25 @@
 require_relative './spec_helper'
 
+describe 'HexStringByteBuffer' do
+  it 'should be able to read a uint8' do
+    hex_string = "0A 0B 0C 0D"
+    buffer = HexStringByteBuffer.new(hex_string)
+    byte = buffer.uint8
+
+    assert_equal(0x0a, byte)
+  end
+end
+
 describe 'CaptionAmerica' do
   it 'should throw invalid caption format error' do
     expect { CaptionAmerica.read("test.caption", :invalid_format) }.must_raise CaptionAmerica::InvalidCaptionFormatError
   end
 
-  describe 'CaptionMaker' do
-    it 'should be able to read a caption maker file' do
-      captions = CaptionAmerica.read(fixture('captionmaker.cap'), :caption_maker)
+  describe 'CaptionMaker v8' do
+    it 'should be able to read a captionmaker v8 file' do
+      captions = CaptionAmerica.read(fixture('captionmakerv8.1.1.cap'), :caption_maker_v8)
 
-      assert_equal(3, captions.count)
-    end
-
-    it 'should be throw an invalid format error when given an invalid file' do
-      expect { CaptionAmerica.read(fixture('webvtt.vtt', :caption_maker)).must_raise CaptionAmerica::InvalidCaptionFileError }
+      assert_equal(395, captions.count)
     end
   end
 
