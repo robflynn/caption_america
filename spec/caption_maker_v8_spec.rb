@@ -12,4 +12,8 @@ describe 'CaptionMaker v8' do
 
     assert_equal(395, captions.count)
   end
+
+  it 'Should throw an invalid file error when given an invalid file' do
+    expect { CaptionAmerica.read(fixture('webvtt.vtt'), :caption_maker_v8).must_raise CaptionAmerica::InvalidCaptionFileError }
+  end
 end

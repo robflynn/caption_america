@@ -3,7 +3,7 @@ require 'bindata'
 
 module CaptionAmerica
   class InvalidTimestampError < StandardError; end
-  class InvalidCaptionFormatError < StandardError; end
+  class UnknownCaptionFormatError < StandardError; end
   class CaptionReaderNotImpementedError < StandardError; end
   class InvalidCaptionFileError < StandardError; end
 
@@ -95,7 +95,7 @@ private
     when :caption_maker_v8, :captionmaker_v8, :cap_v8
       CaptionMakerV8
     else
-      raise InvalidCaptionFormatError
+      raise UnknownCaptionFormatError
     end
 
     raise CaptionReaderNotImpementedError unless reader.respond_to? :read

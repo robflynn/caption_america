@@ -40,6 +40,12 @@ module CaptionAmerica
       # We're going to load the binary data, convert it to hex
       # and then pluck out the structures we need with regex.
       data = File.read(filepath).to_hex_string.downcase
+      buffer = HexStringByteBuffer.new(data)
+      identity = buffer.uint8(count: IDENT.length)
+
+      if identity != IDENT
+        raise CaptionAmerica::InvalidCaptionFileError
+      end
 
       # Find the blocks we want to parse
       subtitle_records = data.scan_with_captures(BLOCK_REGEX)

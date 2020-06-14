@@ -2,7 +2,7 @@ require_relative './spec_helper'
 
 describe 'CaptionAmerica' do
   it 'should throw invalid caption format error' do
-    expect { CaptionAmerica.read("test.caption", :invalid_format) }.must_raise CaptionAmerica::InvalidCaptionFormatError
+    expect { CaptionAmerica.read("test.caption", :invalid_format) }.must_raise CaptionAmerica::UnknownCaptionFormatError
   end
 
   describe 'captions' do
