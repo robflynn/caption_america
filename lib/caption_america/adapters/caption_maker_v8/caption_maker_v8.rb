@@ -72,13 +72,28 @@ module CaptionAmerica
         captions << parse_subtitle_record(match["block"])
       end
 
-      # TODO: Confirm whether or not we drop blank captions.
+      calculate_out_times(captions)
+
+      # After calculating out times, drop the blank captions.
       captions = captions.reject { |c| c.text.length == 0 }
 
       return captions
     end
 
   private
+
+    def self.calculate_out_times(captions)
+      #
+      # Sort out the caption out time
+      #
+      captions.each_with_index do |caption, i|
+        if i < captions.count-1
+          caption.out_time = captions[i+1].in_time
+        end
+
+        #captions[i] = caption
+      end
+    end
 
     def self.parse_subtitle_record(hex_string)
       buffer = HexStringByteBuffer.new(hex_string)
