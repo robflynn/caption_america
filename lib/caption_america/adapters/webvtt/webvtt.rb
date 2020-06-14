@@ -1,9 +1,40 @@
 module CaptionAmerica
   module WebVTT
+    def self.generate(captions)
+      chunks = []
+
+      captions.each do |caption|
+        chunks << generate_chunk(caption)
+      end
+
+      lines = ['WEBVTT']
+      lines << "X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:900000"
+      lines << ""
+      lines += chunks
+
+      lines.join("\n")
+    end
+
+    def self.generate_chunk(caption)
+      vtt_chunk = <<~VTT
+      #{caption.in_time} --> #{caption.out_time}
+      #{caption.text}
+
+      VTT
+
+      vtt_chunk
+    end
+
     def self.read(filepath)
+      data = File.read(filepath)
+
+      self.fromString(data)
+    end
+
+    def self.fromString(vtt_string)
       captions = []
 
-      lines = File.read(filepath).split("\n")
+      lines = vtt_string.split("\n")
 
       format_check = lines.shift
 
@@ -48,6 +79,8 @@ module CaptionAmerica
 
 
       captions << working_caption if working_caption
+
+      captions.map { |c| c.text.strip! }
 
       captions
     end
