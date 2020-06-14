@@ -8,8 +8,8 @@ describe 'WebVTT Adapter' do
 
     caption = captions[0]
     assert_equal("test caption", caption.text)
-    assert_equal("00:00:00:00", caption.in_time)
-    assert_equal("00:00:05:00", caption.out_time)
+    assert_equal("00:00:01.000", caption.in_time)
+    assert_equal("00:00:05.000", caption.out_time)
   end
 
   it 'should throw an InvalidCaptionFileError when given an invalid file' do

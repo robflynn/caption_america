@@ -62,8 +62,8 @@ module CaptionAmerica
       # Must at least have an in and out point
       return false unless tokens.count >= 3
 
-      in_time = CueTime.timestamp_match?(tokens[0])
-      out_time = CueTime.timestamp_match?(tokens[2])
+      in_time = tokens[0]
+      out_time = tokens[2]
 
       true
     end
@@ -71,8 +71,8 @@ module CaptionAmerica
     def self.get_in_and_out_time(line)
       tokens = line.split(/\s+/)
 
-      in_time = CueTime.parse(tokens[0])
-      out_time = CueTime.parse(tokens[2])
+      in_time = tokens[0]
+      out_time = tokens[2]
 
       [in_time, out_time]
     end
