@@ -72,6 +72,9 @@ module CaptionAmerica
         captions << parse_subtitle_record(match["block"])
       end
 
+      # TODO: Confirm whether or not we drop blank captions.
+      captions = captions.reject { |c| c.text.length == 0 }
+
       return captions
     end
 
