@@ -59,9 +59,13 @@ module CaptionAmerica
           next
         end
 
-        puts "CHECKING: #{match["block"]}"
         captions << parse_subtitle_record(match["block"])
       end
+
+      calculate_out_times(captions)
+
+      # After calculating out times, drop the blank captions.
+      captions = captions.reject { |c| c.text.length == 0 }
 
       captions
     end
