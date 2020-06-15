@@ -96,8 +96,6 @@ module CaptionAmerica
         if i < captions.count-1
           caption.out_time = captions[i+1].in_time
         end
-
-        #captions[i] = caption
       end
     end
 

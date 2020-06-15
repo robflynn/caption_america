@@ -18,4 +18,15 @@ describe 'CaptionMaker' do
       CaptionAmerica::CaptionMaker.read(fixture('webvtt.vtt'))
     end
   end
+
+  it "Should be able to detect which integer size to use" do
+    data = File.read(fixture("captionmaker.cap")).to_hex_string
+    integer_size = CaptionAmerica::CaptionMaker.byte_size(data)
+    assert_equal(8, integer_size)
+
+    data = File.read(fixture("captionmakerv8.1.1.cap")).to_hex_string
+    integer_size = CaptionAmerica::CaptionMaker.byte_size(data)
+
+    assert_equal(16, integer_size)
+  end
 end

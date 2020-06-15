@@ -19,12 +19,23 @@ end
 
 module CaptionAmerica
   module CaptionMaker
-    BLOCK_REGEX = /(?<block>00 0b (?<time>.. .. 3A .. .. 3A .. .. 3A .. ..) (?<attributes>.. .. .. .. .. .. .. .. .. .. .. .. ..) (?!00)(?<caption_data>[0-9A-F ]*?) 00 00)/i
-
     IDENT = [
       0x2b, 0x27, 0x0f, 0x3c, 0x43, 0x61, 0x70, 0x4d, 0x61, 0x6b, 0x65, 0x72,
       0x20, 0x50, 0x6c, 0x75, 0x73, 0x3e, 0x04
     ]
+
+    BLOCK_REGEX_8b  = /(?<block>00 0b (?<time>.. .. 3A .. .. 3A .. .. 3A .. ..) (?<attributes>.. .. .. .. .. .. .. .. .. .. .. .. ..) (?!00)(?<caption_data>[0-9A-F ]*?) 00 00)/i
+    BLOCK_REGEX_16b = /(?<block>00 ff fe ff 0b (?<time>.. 00 .. 00 3A 00 .. 00 .. 00 3A 00 .. 00 .. 00 3A 00 .. 00 .. 00) (?<attributes>.. .. .. .. .. .. .. .. .. .. .. .. ..) (?!00)(?!fe ff)(?<caption_data>[0-9A-F ]*?) 00 FF FE FF)/i
+
+    def self.byte_size(data)
+      matches = data.scan_with_captures(BLOCK_REGEX_16b)
+
+      if (matches.length > 0)
+        return 16
+      end
+
+      return 8
+    end
 
     def self.read(filepath)
       captions = []
@@ -45,7 +56,8 @@ module CaptionAmerica
       end
 
       # Find the blocks we want to parse
-      subtitle_records = data.scan_with_captures(BLOCK_REGEX)
+      block_regex = byte_size(data) == 8 ? BLOCK_REGEX_8b : BLOCK_REGEX_16b
+      subtitle_records = data.scan_with_captures(block_regex)
 
       # Loop through each block and use our `HexStringByteBuffer` to read through it.
       subtitle_records.each_with_index do |match, idx|
