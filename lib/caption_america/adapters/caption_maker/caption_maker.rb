@@ -154,13 +154,15 @@ private
                            .map(&:chr)
                            .join
 
-      caption_text = normalized_text(raw_text)
+      text = styled_text(raw_text)
+      plain_text = plain_text(text)
 
       # Assemble the cue data
       cue_data = {
         in_time: in_time,
         attributes: attributes,
-        text: caption_text,
+        text: text,
+        plain_text: plain_text,
         raw_text: raw_text
       }
 
@@ -176,22 +178,55 @@ private
       end
     end
 
-    def normalized_text(text)
-      response = text.strip
+    def plain_text(text)
+      html = styled_text(text)
 
-      return response unless response.include? "{\\rtf1"
+      text
+    end
 
-      doc = suppress_output { ::RubyRTF::Parser.new.parse(response) }
+    # TODO: FIXME: I think we're just going to go with HTML as the interchange format.
+    # It covers all the styling we could need and is easily parsable, there's no reason
+    # to invent a style agnostic format.
+    def styled_text(text)
+      output = ""
 
+      return text unless text.include? "{\\rtf1"
 
-      # Reset the response and iterate
-      response = ""
+      doc = suppress_output { ::RubyRTF::Parser.new.parse(text) }
+
       doc.sections.each do |section|
-        response = response + section[:text]
+        mods = section[:modifiers]
+
+        prefix = ''
+        suffix = ''
+
+        if mods[:paragraph] && section[:text].empty?
+          output << "\n"
+        end
+
+        next if section[:text].empty?
+
+        if mods[:paragraph]
+          prefix = "#{prefix}<p>"
+          suffix = "</p>#{suffix}"
+        end
+
+        if mods[:italic]
+          prefix = "#{prefix}<i>"
+          suffix = "</i>#{suffix}"
+        end
+
+        if mods[:bold]
+          prefix = "#{prefix}<b>"
+          suffix = "</b>#{suffix}"
+        end
+
+        output << "#{prefix}#{section[:text]}#{suffix}"
       end
 
-      return response
+      output.strip
     end
+    memoize :styled_text
 
     # Our block finder regex isn't perfect, but we can filter out the false
     # postives pretty easily

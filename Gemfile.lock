@@ -9,7 +9,10 @@ GEM
     bindata (1.8.3)
     hex_string (1.0.1)
     memoist (0.16.2)
+    mini_portile2 (2.4.0)
     minitest (5.14.1)
+    nokogiri (1.10.9)
+      mini_portile2 (~> 2.4.0)
     rack (2.2.2)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -26,6 +29,7 @@ DEPENDENCIES
   hex_string
   memoist
   minitest
+  nokogiri
   rack-test
   rake (~> 10.0)
   ruby-rtf

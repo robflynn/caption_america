@@ -18,7 +18,8 @@ describe 'CaptionMaker' do
 
     caption = captions[3]
 
-    assert_equal("Hi, I'm Luke,and this is Teen Kids News.", caption.text)
+    assert_equal("Hi, I'm Luke,\nand this is Teen Kids News.", caption.plain_text)
+    assert_equal("<b>Hi, I'm Luke,</b>\n<b>and this is </b><i><b>Teen Kids News.</b></i>", caption.text)
     assert_equal("00:00:14:17", caption.in_time)
     assert_equal("00:00:18:00", caption.out_time)
 

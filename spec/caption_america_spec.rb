@@ -5,13 +5,12 @@ describe 'CaptionAmerica' do
     expect { CaptionAmerica.read("test.caption", :invalid_format) }.must_raise CaptionAmerica::UnknownCaptionFormatError
   end
 
-  describe 'captions' do
-    it 'should be able to read a valid caption file' do
-      captions = CaptionAmerica.read(fixture('webvtt.vtt'), :vtt)
+  describe 'Caption' do
+    it 'should convert html to plain_text' do
+      caption = CaptionAmerica::Caption.new
+      caption.text = "<b>Hello, <i>William</i>.</b>"
 
-      assert_equal(2, captions.count)
-
-      assert_equal("test caption", captions[0].text)
+      assert_equal("Hello, William.", caption.plain_text)
     end
   end
 end
