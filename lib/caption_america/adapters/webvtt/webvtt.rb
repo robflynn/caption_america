@@ -34,7 +34,11 @@ module CaptionAmerica
     def self.fromString(vtt_string)
       captions = []
 
-      lines = vtt_string.split("\n")
+      begin
+        lines = vtt_string.split("\n")
+      rescue
+        raise InvalidCaptionFileError
+      end
 
       format_check = lines.shift
 

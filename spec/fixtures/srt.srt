@@ -1,0 +1,10 @@
+00:00:01:00 --> 00:00:05:00
+hello, this is a
+caption
+
+00:00:05:00 --> 00:00:07:00
+the caption is very nice.
+
+00:00:07:00 --> 00:00:09:00
+it is also an
+expert basketweaver.
