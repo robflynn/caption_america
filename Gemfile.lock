@@ -8,6 +8,7 @@ GEM
   specs:
     bindata (1.8.3)
     hex_string (1.0.1)
+    memoist (0.16.2)
     minitest (5.14.1)
     rack (2.2.2)
     rack-test (1.1.0)
@@ -23,6 +24,7 @@ DEPENDENCIES
   bundler (~> 1.7)
   caption_america!
   hex_string
+  memoist
   minitest
   rack-test
   rake (~> 10.0)

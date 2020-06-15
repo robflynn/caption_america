@@ -1,10 +1,10 @@
 module CaptionAmerica
-  module WebVTT
+  class WebVTT < Adapter
     def self.generate(captions)
       chunks = []
 
       captions.each do |caption|
-        chunks << generate_chunk(caption)
+        chunks << WebVTT::generate_chunk(caption)
       end
 
       lines = ['WEBVTT']
@@ -25,10 +25,10 @@ module CaptionAmerica
       vtt_chunk
     end
 
-    def self.read(filepath)
-      data = File.read(filepath)
+    def read
+      data = File.read(self.filepath)
 
-      self.fromString(data)
+      WebVTT::fromString(data)
     end
 
     def self.fromString(vtt_string)

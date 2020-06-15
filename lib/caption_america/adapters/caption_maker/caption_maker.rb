@@ -1,3 +1,7 @@
+require 'memoist'
+require 'hex_string'
+require 'ruby-rtf'
+
 def suppress_output
   original_stdout, original_stderr = $stdout.clone, $stderr.clone
   $stderr.reopen File.new('/dev/null', 'w')
@@ -18,7 +22,9 @@ class String
 end
 
 module CaptionAmerica
-  module CaptionMaker
+  class CaptionMaker < Adapter
+    extend Memoist
+
     IDENT = [
       0x2b, 0x27, 0x0f, 0x3c, 0x43, 0x61, 0x70, 0x4d, 0x61, 0x6b, 0x65, 0x72,
       0x20, 0x50, 0x6c, 0x75, 0x73, 0x3e, 0x04
@@ -27,8 +33,21 @@ module CaptionAmerica
     BLOCK_REGEX_8b  = /(?<block>00 0b (?<time>.. .. 3A .. .. 3A .. .. 3A .. ..) (?<attributes>.. .. .. .. .. .. .. .. .. .. .. .. ..) (?!00)(?<caption_data>[0-9A-F ]*?) 00 00)/i
     BLOCK_REGEX_16b = /(?<block>00 ff fe ff 0b (?<time>.. 00 .. 00 3A 00 .. 00 .. 00 3A 00 .. 00 .. 00 3A 00 .. 00 .. 00) (?<attributes>.. .. .. .. .. .. .. .. .. .. .. .. ..) (?!00)(?!fe ff)(?<caption_data>[0-9A-F ]*?) 00 FF FE FF)/i
 
-    def self.byte_size(data)
-      matches = data.scan_with_captures(BLOCK_REGEX_16b)
+    attr_reader :data
+
+    def initialize(filepath)
+      super(filepath)
+
+      @data = File.read(filepath).to_hex_string.downcase
+    end
+
+    def self.detect_byte_size(filepath)
+      adapter = CaptionMaker.new(filepath)
+      adapter.byte_size
+    end
+
+    def byte_size
+      matches = @data.scan_with_captures(BLOCK_REGEX_16b)
 
       if (matches.length > 0)
         return 16
@@ -36,8 +55,9 @@ module CaptionAmerica
 
       return 8
     end
+    memoize :byte_size
 
-    def self.read(filepath)
+    def read
       captions = []
 
       # We're going to do this in a weird way, but this was the easiest way I
@@ -47,8 +67,7 @@ module CaptionAmerica
       #
       # We're going to load the binary data, convert it to hex
       # and then pluck out the structures we need with regex.
-      data = File.read(filepath).to_hex_string.downcase
-      buffer = HexStringByteBuffer.new(data)
+      buffer = HexStringByteBuffer.new(@data)
       identity = buffer.uint8(count: IDENT.length)
 
       if identity != IDENT
@@ -56,7 +75,7 @@ module CaptionAmerica
       end
 
       # Find the blocks we want to parse
-      block_regex = byte_size(data) == 8 ? BLOCK_REGEX_8b : BLOCK_REGEX_16b
+      block_regex = self.byte_size(data) == 8 ? BLOCK_REGEX_8b : BLOCK_REGEX_16b
       subtitle_records = data.scan_with_captures(block_regex)
 
       # Loop through each block and use our `HexStringByteBuffer` to read through it.
@@ -67,9 +86,13 @@ module CaptionAmerica
         # easy to determine a skip value. Instead, we'll just call these
         # out directly here.  It could probably be done in the regex above
         # but I'd rather keep the regex as readable as possible.
-        if match["attributes"] == "00 00 00 00 00 00 00 00 00 00 00 00 0b"
-          next
+        skip = false
+        skippable_blocks.each do |skippable_block|
+          if match["attributes"] == skippable_block
+            skip = true
+          end
         end
+        next if skip
 
         captions << parse_subtitle_record(match["block"])
       end
@@ -84,7 +107,7 @@ module CaptionAmerica
 
 private
 
-    def self.calculate_out_times(captions)
+    def calculate_out_times(captions)
       captions.each_with_index do |caption, i|
         if i < captions.count-1
           caption.out_time = captions[i+1].in_time
@@ -92,15 +115,25 @@ private
       end
     end
 
-    def self.parse_subtitle_record(hex_string)
+    def parse_subtitle_record(hex_string)
       buffer = HexStringByteBuffer.new(hex_string)
 
       # Skip the one byte structure identifier 0x000
-      buffer.skip(:uint8, count: 1)
+      if byte_size == 8
+        buffer.skip(:uint8, count: 1)
+      else
+        buffer.skip(:uint8, count: 4)
+      end
 
       # Get the length of the text, this will always be 11
       len = buffer.uint8
-      in_time = buffer.uint8(count: len).map(&:chr).join
+
+      if byte_size == 8
+        in_time = buffer.uint8(count: len).map(&:chr).join
+      else
+        in_time = buffer.uint16(count: len).map(&:chr).join
+      end
+
       attributes = {
         position: buffer.float32,
         line: buffer.float32,
@@ -121,7 +154,7 @@ private
                            .map(&:chr)
                            .join
 
-      caption_text = self.normalized_text(raw_text)
+      caption_text = normalized_text(raw_text)
 
       # Assemble the cue data
       cue_data = {
@@ -134,7 +167,7 @@ private
       return build_caption(cue_data)
     end
 
-    def self.build_caption(cue_data)
+    def build_caption(cue_data)
       Caption.new.tap do |c|
         c.in_time = cue_data[:in_time]
         c.text = cue_data[:text]
@@ -143,7 +176,7 @@ private
       end
     end
 
-    def self.normalized_text(text)
+    def normalized_text(text)
       response = text.strip
 
       return response unless response.include? "{\\rtf1"
@@ -158,6 +191,24 @@ private
       end
 
       return response
+    end
+
+    # Our block finder regex isn't perfect, but we can filter out the false
+    # postives pretty easily
+    def skippable_blocks
+      case byte_size
+      when 8
+        ["00 00 00 00 00 00 00 00 00 00 00 00 0b"]
+      when 16
+        [
+          "01 00 00 00 00 00 00 00 00 00 00 00 00",
+          "00 00 00 00 00 00 00 00 00 00 00 00 FF",
+          "FF FE FF 00 FF FE FF 00 FF FE FF 00 FF",
+          "FF FE FF 00 00 00 00"
+        ]
+      else
+        []
+      end
     end
   end
 end

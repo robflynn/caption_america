@@ -19,9 +19,7 @@ module CaptionAmerica
       raise UnknownCaptionFormatError
     end
 
-    raise CaptionReaderNotImpementedError unless reader.respond_to? :read
-
-    reader.read(filepath)
+    reader.new(filepath).read
   end
 end
 
@@ -29,6 +27,6 @@ require 'caption_america/version'
 require 'caption_america/hex_string_byte_buffer'
 require 'caption_america/cue_time'
 require 'caption_america/caption'
+require 'caption_america/adapter'
 require 'caption_america/adapters/caption_maker/caption_maker'
-require 'caption_america/adapters/caption_maker_v8/caption_maker_v8'
 require 'caption_america/adapters/webvtt/webvtt'

@@ -2,7 +2,8 @@ require_relative './spec_helper'
 
 describe 'WebVTT Adapter' do
   it 'should be able to read a valid WebVTT file' do
-    captions = CaptionAmerica::WebVTT.read(fixture("webvtt.vtt"))
+    adapter = CaptionAmerica::WebVTT.new(fixture("webvtt.vtt"))
+    captions = adapter.read
 
     assert_equal(2, captions.length)
 
