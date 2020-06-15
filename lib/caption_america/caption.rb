@@ -5,18 +5,15 @@ module CaptionAmerica
 
     # Payload
     attr_accessor :text
+    attr_accessor :raw_text
 
     # Positioning
     attr_accessor :horizontal, :vertical
     attr_accessor :justification
 
-    # Styling
-    attr_accessor :foreground, :background
-    attr_accessor :bold, :italic, :underline
-    attr_accessor :font, :font_size
-
     def initialize
       @text = ""
+      @raw_text = ""
     end
   end
 end
