@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    caption_america (0.0.1)
+    caption_america (0.0.2)
 
 GEM
   remote: https://rubygems.org/

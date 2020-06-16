@@ -102,6 +102,9 @@ module CaptionAmerica
     def self.caption_block_header(caption)
       header = []
 
+      puts "A: caption", caption
+      puts caption.inspect
+      puts "B"
       header += self.position_headers(caption)
 
       header.join(' ')

@@ -174,8 +174,34 @@ private
       Caption.new.tap do |c|
         c.in_time = cue_data[:in_time]
         c.text = cue_data[:text]
-        c.horizontal = cue_data[:position]
-        c.vertical = cue_data[:line]
+        c.horizontal = normalize_horizontal_position(cue_data[:attributes][:position])
+        c.vertical = normalize_vertical_position(cue_data[:attributes][:line])
+      end
+    end
+
+    def normalize_horizontal_position(position)
+      case position
+      when -1
+        Caption::Position::CENTER
+      when 0
+        Caption::Position::LEFT
+      when -2
+        Caption::Position::RIGHT
+      else
+        position
+      end
+    end
+
+    def normalize_vertical_position(position)
+      case position
+      when -1
+        Caption::Position::CENTER
+      when 0
+        Caption::Position::TOP
+      when -2
+        Caption::Position::BOTTOM
+      else
+        position
       end
     end
 

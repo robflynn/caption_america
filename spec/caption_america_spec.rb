@@ -6,6 +6,14 @@ describe 'CaptionAmerica' do
   end
 
   describe 'Caption' do
+    it "temporary test" do
+      captions = CaptionAmerica.read(fixture("8855_Its_A_Dogs_Day.cap"), :cap)
+
+      vtt = CaptionAmerica::WebVTT.generate(captions)
+
+      puts vtt
+    end
+
     it 'should convert html to plain_text' do
       caption = CaptionAmerica::Caption.new
       caption.text = "<b>Hello, <i>William</i>.</b>"
