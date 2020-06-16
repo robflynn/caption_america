@@ -150,9 +150,10 @@ private
       end
 
       # The caption text, unliked the timecode, is stored as an array of bytes
-      raw_text = buffer.uint8(count: len)
-                           .map(&:chr)
-                           .join
+      # Since we're mapping this, we'll force an array even on single reads.
+      raw_text = buffer.uint8(count: len, array: true)
+                       .map(&:chr)
+                       .join
 
       text = styled_text(raw_text)
       plain_text = plain_text(text)

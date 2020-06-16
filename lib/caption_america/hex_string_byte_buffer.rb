@@ -46,15 +46,15 @@ class HexStringByteBuffer
 
   def handle_primitive(primitive, **args)
     count = args[:count] || 1
+    array = args[:array] || false
     chunk = self.read(bytes: primitive[:bytes] * count)
-
 
     response = primitive[:proc].call(chunk, count: count)
 
     # If only reading a single item, return the item, otherwise
     # return an array
     if response.is_a? Array
-      return response.length == 1 ? response[0] : response.flatten
+      return response.length == 1 && !array ? response[0] : response.flatten
     end
 
     response

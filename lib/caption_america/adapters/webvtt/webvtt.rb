@@ -116,7 +116,6 @@ module CaptionAmerica
       #
       # VERTICAL
       #
-      puts caption.inspect
       if caption.vertical == Caption::Position::TOP
         attributes << "line:#{MARGIN}%"
       elsif caption.vertical == Caption::Position::BOTTOM

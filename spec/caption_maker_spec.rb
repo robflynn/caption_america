@@ -40,4 +40,10 @@ describe 'CaptionMaker' do
     integer_size = CaptionAmerica::CaptionMaker::detect_byte_size(fixture("captionmakerv8.1.1.cap"))
     assert_equal(16, integer_size)
   end
+
+  it "Should be able to parse a caption with a length of 1" do
+    captions = CaptionAmerica::read(fixture("one_character_caption.cap"), :caption_maker)
+
+    assert_equal("!", captions[0].plain_text)
+  end
 end
