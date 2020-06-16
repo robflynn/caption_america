@@ -29,7 +29,7 @@ module CaptionAmerica
 
     def self.generate_chunk(caption)
       vtt_chunk = <<~VTT
-      #{caption.in_time} --> #{caption.out_time} #{caption_block_header(caption)}
+      #{caption.in_time} --> #{caption.out_time} #{position_headers(caption)}
       #{caption.text}
 
       VTT
@@ -99,17 +99,6 @@ module CaptionAmerica
 
   private
 
-    def self.caption_block_header(caption)
-      header = []
-
-      puts "A: caption", caption
-      puts caption.inspect
-      puts "B"
-      header += self.position_headers(caption)
-
-      header.join(' ')
-    end
-
     def self.position_headers(caption)
       attributes = []
 
@@ -157,7 +146,7 @@ module CaptionAmerica
         attributes << "position:50%"
       end
 
-      return attributes
+      return attributes.join(' ')
     end
 
     def self.is_caption_block_header?(line)

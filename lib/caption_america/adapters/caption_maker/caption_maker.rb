@@ -155,6 +155,10 @@ private
                        .map(&:chr)
                        .join
 
+      # Normalize the music note
+      raw_text = raw_text.unpack('C*').pack('U*')
+      raw_text.gsub!("§", "♪")
+
       text = styled_text(raw_text)
       plain_text = plain_text(text)
 
