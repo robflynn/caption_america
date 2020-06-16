@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.1.2'
 
   s.add_development_dependency "bundler", "~> 1.7"
-  s.add_development_dependency "rake", "~> 10.0"
+  s.add_development_dependency "rake", "~> 12.3"
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'rack-test'
   s.add_development_dependency 'hex_string'
