@@ -31,7 +31,6 @@ module CaptionAmerica
       vtt_chunk = <<~VTT
       #{caption.in_time} --> #{caption.out_time} #{position_headers(caption)}
       #{caption.text}
-
       VTT
 
       vtt_chunk
