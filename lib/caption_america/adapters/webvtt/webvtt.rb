@@ -1,5 +1,17 @@
+require 'rmagick'
+include Magick
+
 module CaptionAmerica
   class WebVTT < Adapter
+    WIDTH       = 1920
+    HEIGHT      = 1080
+    MARGIN      = 10
+    FONT_SIZE   = 56
+    KERNING     = 5
+    BOX_PADDING = 10
+    MARGIN_H    = HEIGHT * (MARGIN / 100.0)
+    MARGIN_W    = WIDTH * (MARGIN / 100.0)
+
     def self.generate(captions)
       chunks = []
 
@@ -90,9 +102,60 @@ module CaptionAmerica
     def self.caption_block_header(caption)
       header = []
 
-
+      header += self.position_headers(caption)
 
       header.join(' ')
+    end
+
+    def self.position_headers(caption)
+      attributes = []
+
+      num_lines = caption.plain_text.split("\n").count
+      box_metrics = self.get_metrics_if_needed(caption)
+
+      #
+      # VERTICAL
+      #
+      puts caption.inspect
+      if caption.vertical == Caption::Position::TOP
+        attributes << "line:#{MARGIN}%"
+      elsif caption.vertical == Caption::Position::BOTTOM
+        # FIXME: This is a hacky magic number based on observation.
+        # We were attempting to measure string metrics with rmagick
+        # but that wasn't working out. Come back to this.
+        line_height = 5.8
+        pos = 100 - MARGIN - (num_lines * line_height)
+
+        # We're adding 15px of padding on the view, let's account for it here
+        # FIXME: This probably isn't needed any longer, run some tests and see
+        pos = pos + 2.08
+
+        attributes << "line:#{pos.round}%"
+      elsif caption.vertical == Caption::Position::CENTER
+        pos = 50 - (box_metrics[:box_height].to_f / 2)
+        attributes << "line:#{pos}%"
+      else
+        pos = (caption.vertical * 100).round
+        attributes << "line:#{pos}%"
+      end
+
+      #
+      # HORIZONTAL
+      #
+      if caption.horizontal == Caption::Position::LEFT
+        attributes << "align:start"
+        attributes << "position:#{MARGIN}%"
+      elsif caption.horizontal == Caption::Position::RIGHT
+        pos = 100 - MARGIN - box_metrics[:box_width]
+
+        attributes << "align:start"
+        attributes << "position:#{pos}%"
+      elsif caption.horizontal == Caption::Position::CENTER
+        attributes << "align:middle"
+        attributes << "position:50%"
+      end
+
+      return attributes
     end
 
     def self.is_caption_block_header?(line)
@@ -117,5 +180,65 @@ module CaptionAmerica
 
       [in_time, out_time]
     end
+
+
+    def self.get_metrics_if_needed(caption)
+      measure = true
+
+      # We don't need to measure top or bottom placements
+      measure = false if caption.vertical == Caption::Position::TOP
+      measure = false if caption.vertical == Caption::Position::BOTTOM
+
+      # Left and center placements do not need to be measures
+      measure = true if caption.horizontal != Caption::Position::LEFT && caption.horizontal != Caption::Position::CENTER
+
+      return if caption.blank?
+      return if measure == false
+
+      canvas = ImageList.new
+      canvas.new_image(WIDTH, HEIGHT, HatchFill.new('white', 'gray90'))
+
+      label = Draw.new
+
+      # FIXME: Check the Arial font on the linxu workers
+      if caption.italic?
+        label.font = "/Library/Fonts/Arial Bold Italic.ttf"
+      else
+        label.font = "/Library/Fonts/Arial Bold.ttf"
+      end
+
+      label.font_style = Magick::NormalStyle
+
+      #
+      # Apply font styles if needed
+      #
+      label.font_style = Magick::ItalicStyle if caption.italic?
+
+      label.pointsize = FONT_SIZE
+      label.font_weight = Magick::BoldWeight
+      label.gravity = Magick::NorthWestGravity
+      label.stroke_width = 1
+      label.stroke = 'red'
+      label.kerning = KERNING
+      label.fill = '#ff0000'
+
+      # Measure the text based on the font settings defined above
+      #
+      metrics = label.get_multiline_type_metrics(caption.plain_text)
+
+      width = metrics.width
+      height = metrics.height
+
+      box_width = ((((width.to_f + BOX_PADDING + BOX_PADDING) / WIDTH.to_f)) * 100).round # adjust for padding
+      box_height = ((((height.to_f + BOX_PADDING + BOX_PADDING) / HEIGHT.to_f)) * 100).round # adjust for padding
+
+      return {
+        width: width,
+        height: height,
+        box_width: box_width,
+        box_height: box_height
+      }
+    end
+
   end
 end

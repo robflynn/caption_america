@@ -30,6 +30,7 @@ describe 'WebVTT Adapter' do
       c.in_time = "00:00:00:05"
       c.out_time = "00:00:00:10"
       c.text = "test caption 2"
+      c.vertical = "top"
     end
 
     result = CaptionAmerica::WebVTT.generate(captions)
@@ -39,7 +40,5 @@ describe 'WebVTT Adapter' do
     assert_equal("test caption 2", parsed_captions[1].text)
     assert_equal("00:00:00:10", parsed_captions[1].out_time)
     assert_equal("00:00:00:05", parsed_captions[1].in_time)
-
-
   end
 end

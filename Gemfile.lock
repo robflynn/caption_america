@@ -17,6 +17,7 @@ GEM
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (10.5.0)
+    rmagick (4.1.2)
     ruby-rtf (0.0.5)
 
 PLATFORMS
@@ -32,6 +33,7 @@ DEPENDENCIES
   nokogiri
   rack-test
   rake (~> 10.0)
+  rmagick
   ruby-rtf
 
 BUNDLED WITH
