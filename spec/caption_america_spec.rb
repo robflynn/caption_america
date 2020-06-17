@@ -57,5 +57,18 @@ describe 'CaptionAmerica' do
       caption.text = "<b><i></i></b>"
       assert_equal(true, caption.blank?)
     end
+
+    it 'should be able to understand simultaneously captions' do
+      captions = CaptionAmerica.read(fixture("8855_Its_A_Dogs_Day.cap"), :cap)
+
+      caption1 = captions[14]
+      caption2 = captions[15]
+
+      assert_equal("00:01:04:00", caption1.in_time)
+      assert_equal("00:01:04:00", caption2.in_time)
+
+      assert_equal("00:01:05:22", caption1.out_time)
+      assert_equal("00:01:05:22", caption2.out_time)
+    end
   end
 end

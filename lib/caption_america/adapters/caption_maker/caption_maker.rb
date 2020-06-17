@@ -110,7 +110,20 @@ private
     def calculate_out_times(captions)
       captions.each_with_index do |caption, i|
         if i < captions.count-1
-          caption.out_time = captions[i+1].in_time
+
+          # If all else fails, just make it the last one
+          out_time = captions.last.out_time
+
+          # We need to handle the possibility that we have multiple captions
+          # on s cree at once
+          (i...captions.length).each do |n|
+            if captions[n].in_time != caption.in_time
+              out_time = captions[n].in_time if out_time.nil?
+              break
+            end
+          end
+
+          caption.out_time = out_time
         end
       end
     end
