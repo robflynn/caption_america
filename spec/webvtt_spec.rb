@@ -22,13 +22,13 @@ describe 'WebVTT Adapter' do
 
     captions << CaptionAmerica::Caption.new.tap do |c|
       c.in_time = "00:00:00:00"
-      c.out_time = "00:00:00:05"
+      c.out_time = "00:00:00:15"
       c.text = "test caption"
     end
 
     captions << CaptionAmerica::Caption.new.tap do |c|
       c.in_time = "00:00:00:05"
-      c.out_time = "00:00:00:10"
+      c.out_time = "00:00:10:17"
       c.text = "test caption 2"
       c.vertical = "top"
     end
@@ -38,7 +38,7 @@ describe 'WebVTT Adapter' do
 
     parsed_captions = CaptionAmerica::WebVTT.fromString(result)
     assert_equal("test caption 2", parsed_captions[1].text)
-    assert_equal("00:00:00:10", parsed_captions[1].out_time)
-    assert_equal("00:00:00:05", parsed_captions[1].in_time)
+    assert_equal("00:00:00.167", parsed_captions[1].in_time)
+    assert_equal("00:00:10.567", parsed_captions[1].out_time)
   end
 end

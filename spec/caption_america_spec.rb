@@ -9,6 +9,10 @@ describe 'CaptionAmerica' do
     it "temporary test" do
       captions = CaptionAmerica.read(fixture("8855_Its_A_Dogs_Day.cap"), :cap)
 
+      captions.each do |c|
+        c.text = "<b>#{c.text}</b>"
+      end
+
       vtt = CaptionAmerica::WebVTT.generate(captions)
 
       File.write("/Users/robflynn/womble.vtt", vtt)

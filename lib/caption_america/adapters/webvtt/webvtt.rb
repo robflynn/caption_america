@@ -29,11 +29,24 @@ module CaptionAmerica
 
     def self.generate_chunk(caption)
       vtt_chunk = <<~VTT
-      #{caption.in_time} --> #{caption.out_time} #{position_headers(caption)}
+      #{vtt_time(caption.in_time)} --> #{vtt_time(caption.out_time)} #{position_headers(caption)}
       #{caption.text}
       VTT
 
       vtt_chunk
+    end
+
+    def self.vtt_time(timecode)
+      fps = 29.97
+
+      return "00:00:00.000" if timecode.nil?
+      return timecode if timecode.include? "."
+
+      hours, minutes, seconds, frames  = timecode.split(":")
+
+      fractional_seconds = ((1.0/fps) * 1000 * frames.to_i).round.to_s.ljust(3, "0")
+
+      "#{hours}:#{minutes}:#{seconds}.#{fractional_seconds}"
     end
 
     def read
