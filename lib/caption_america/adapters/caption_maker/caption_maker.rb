@@ -30,7 +30,7 @@ module CaptionAmerica
       0x20, 0x50, 0x6c, 0x75, 0x73, 0x3e, 0x04
     ]
 
-    BLOCK_REGEX_8b  = /(?<block>00 0b (?<time>.. .. 3A .. .. 3A .. .. 3A .. ..) (?<attributes>.. .. .. .. .. .. .. .. .. .. .. .. ..) (?!00)(?<caption_data>[0-9A-F ]*?) 00 00)/i
+    BLOCK_REGEX_8b  = /(?<block>00 0b (?<time>.. .. 3A .. .. 3A .. .. 3A .. ..) (?<attributes>.. .. .. .. .. .. .. .. .. .. .. .. ..) (?<caption_data>[0-9A-F ]*?) 00 00)/i
     BLOCK_REGEX_16b = /(?<block>00 ff fe ff 0b (?<time>.. 00 .. 00 3A 00 .. 00 .. 00 3A 00 .. 00 .. 00 3A 00 .. 00 .. 00) (?<attributes>.. .. .. .. .. .. .. .. .. .. .. .. ..) (?!00)(?!fe ff)(?<caption_data>[0-9A-F ]*?) 00 FF FE FF)/i
 
     attr_reader :data
