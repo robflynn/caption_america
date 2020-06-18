@@ -44,7 +44,7 @@ module CaptionAmerica
 
       hours, minutes, seconds, frames  = timecode.split(":")
 
-      fractional_seconds = ((1.0/fps) * 1000 * frames.to_i).round.to_s.ljust(3, "0")
+      fractional_seconds = ((1.0/fps) * 1000 * frames.to_i).round.to_s.rjust(3, "0")
 
       "#{hours}:#{minutes}:#{seconds}.#{fractional_seconds}"
     end

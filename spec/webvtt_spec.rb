@@ -13,6 +13,14 @@ describe 'WebVTT Adapter' do
     assert_equal("00:00:05.000", caption.out_time)
   end
 
+  it 'should correctly handle timecode conversion' do
+    in_time = CaptionAmerica::WebVTT.vtt_time("00:07:54:02")
+    out_time = CaptionAmerica::WebVTT.vtt_time("00:07:54:10")
+
+    assert_equal("00:07:54.067", in_time)
+    assert_equal("00:07:54.334", out_time)
+  end
+
   it 'should throw an InvalidCaptionFileError when given an invalid file' do
     expect { CaptionAmerica::WebVTT.read(fixture("captionmakerv8.1.1.cap")).must_raise CaptionAmerica::InvalidCaptionFileError }
   end
