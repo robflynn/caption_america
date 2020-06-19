@@ -2,7 +2,7 @@ require_relative './spec_helper'
 
 describe 'CaptionMaker' do
   it 'should be able to read an 8 bit integer captionmaker file' do
-    captions = CaptionAmerica.read(fixture('captionmaker.cap'), :caption_maker)
+    captions = CaptionAmerica.read(fixture('captionmaker.cap'))
 
     assert_equal(3, captions.count)
 
@@ -14,7 +14,7 @@ describe 'CaptionMaker' do
   end
 
   it 'should be able to read an 16 bit integer captionmaker file' do
-    captions = CaptionAmerica.read(fixture('captionmakerv8.1.1.cap'), :caption_maker)
+    captions = CaptionAmerica.read(fixture('captionmakerv8.1.1.cap'))
 
     caption = captions[3]
 
@@ -42,7 +42,7 @@ describe 'CaptionMaker' do
   end
 
   it "Should be able to parse a caption with a length of 1" do
-    captions = CaptionAmerica::read(fixture("one_character_caption.cap"), :caption_maker)
+    captions = CaptionAmerica::read(fixture("one_character_caption.cap"))
 
     assert_equal("!", captions[0].plain_text)
   end

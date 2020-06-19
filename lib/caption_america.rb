@@ -7,19 +7,28 @@ module CaptionAmerica
   class CaptionReaderNotImpementedError < StandardError; end
   class InvalidCaptionFileError < StandardError; end
 
-  def self.read(filepath, type)
+  def self.read(filepath, type = nil)
+    type = determine_type_from_file(filepath) if type.nil?
+
     reader = case type
-    when :vtt, :webvtt
+    when :vtt
       WebVTT
-    when :caption_maker, :captionmaker, :cap
+    when :cap
       CaptionMaker
-    when :caption_maker_v8, :captionmaker_v8, :cap_v8
-      CaptionMakerV8
+    when :dfxp
+      DFXP
     else
       raise UnknownCaptionFormatError
     end
 
     reader.new(filepath).read
+  end
+
+  def self.determine_type_from_file(file)
+    # This far everything syncs up, add special cases here
+    return :unknown if File.extname(file.path).empty?
+
+    File.extname(file.path.downcase)[1..].to_sym
   end
 end
 
@@ -30,3 +39,4 @@ require 'caption_america/caption'
 require 'caption_america/adapter'
 require 'caption_america/adapters/caption_maker/caption_maker'
 require 'caption_america/adapters/webvtt/webvtt'
+require 'caption_america/adapters/dfxp/dfxp'
