@@ -46,4 +46,17 @@ describe 'CaptionMaker' do
 
     assert_equal("!", captions[0].plain_text)
   end
+
+  # Recently discovered edge case, only run across it once but could occur more often
+  it "Should handle the final caption and clearing caption having the same timestamp" do
+    captions = CaptionAmerica.read(fixture("9729_The_Three_Little_Pigs.cap"), :cap)
+    final_caption = captions.last
+
+    assert_operator "00:00:00:00", :!=, final_caption.out_time
+
+    in_frame_time = CaptionAmerica::CueTime.to_frames(final_caption.in_time)
+    out_frame_time = CaptionAmerica::CueTime.to_frames(final_caption.out_time)
+
+    assert_operator in_frame_time, :<=, out_frame_time
+  end
 end
