@@ -8,15 +8,20 @@ module CaptionAmerica
 
     def self.fromString(data)
       captions = []
+      collections = []
 
       doc = Nokogiri::XML(data)
 
       items = doc.xpath("//tt:p", "tt": "http://www.w3.org/ns/ttml")
       items.each do |item|
-        captions << build_caption(item)
+        collection = {
+          caption: build_caption(item)
+        }
+
+        collections << collection
       end
 
-      captions
+      collections.map { |c| c[:caption] }
     end
 
   private
@@ -28,11 +33,16 @@ module CaptionAmerica
         c.vertical = Caption::Position::BOTTOM
         c.horizontal = Caption::Position::CENTER
 
-        caption_html = item.children.map {|c| c.to_html }.join
-        html = Nokogiri::HTML.fragment(caption_html)
-        html.css("br").each { |br| br.replace("\n") }
-        c.text = html.to_html
+        c.text = collect_html(item)
       end
+    end
+
+    def self.collect_html(element)
+      caption_html = element.children.map {|c| c.to_html }.join
+      html = Nokogiri::HTML.fragment(caption_html)
+      html.css("br").each { |br| br.replace("\n") }
+
+      html.to_html
     end
   end
 end

@@ -3,20 +3,18 @@ include Magick
 
 module CaptionAmerica
   class WebVTT < Adapter
+    MARGIN      = 10
     WIDTH       = 1920
     HEIGHT      = 1080
-    MARGIN      = 10
     FONT_SIZE   = 56
     KERNING     = 5
     BOX_PADDING = 10
-    MARGIN_H    = HEIGHT * (MARGIN / 100.0)
-    MARGIN_W    = WIDTH * (MARGIN / 100.0)
 
-    def self.generate(captions)
+    def self.generate(captions, margin: MARGIN)
       chunks = []
 
       captions.each do |caption|
-        chunks << WebVTT::generate_chunk(caption)
+        chunks << WebVTT::generate_chunk(caption, margin: margin)
       end
 
       lines = ['WEBVTT']
@@ -27,9 +25,9 @@ module CaptionAmerica
       lines.join("\n")
     end
 
-    def self.generate_chunk(caption)
+    def self.generate_chunk(caption, margin: MARGIN)
       vtt_chunk = <<~VTT
-      #{vtt_time(caption.in_time)} --> #{vtt_time(caption.out_time)} #{position_headers(caption)}
+      #{vtt_time(caption.in_time)} --> #{vtt_time(caption.out_time)} #{position_headers(caption, margin: margin)}
       #{caption.text}
       VTT
 
@@ -111,7 +109,7 @@ module CaptionAmerica
 
   private
 
-    def self.position_headers(caption)
+    def self.position_headers(caption, margin: MARGIN)
       attributes = []
 
       num_lines = caption.plain_text.split("\n").count
@@ -121,13 +119,13 @@ module CaptionAmerica
       # VERTICAL
       #
       if caption.vertical == Caption::Position::TOP
-        attributes << "line:#{MARGIN}%"
+        attributes << "line:#{margin}%"
       elsif caption.vertical == Caption::Position::BOTTOM
         # FIXME: This is a hacky magic number based on observation.
         # We were attempting to measure string metrics with rmagick
         # but that wasn't working out. Come back to this.
         line_height = 5.8
-        pos = 100 - MARGIN - (num_lines * line_height)
+        pos = 100 - margin - (num_lines * line_height)
 
         # We're adding 15px of padding on the view, let's account for it here
         # FIXME: This probably isn't needed any longer, run some tests and see
@@ -147,9 +145,9 @@ module CaptionAmerica
       #
       if caption.horizontal == Caption::Position::LEFT
         attributes << "align:start"
-        attributes << "position:#{MARGIN}%"
+        attributes << "position:#{margin}%"
       elsif caption.horizontal == Caption::Position::RIGHT
-        pos = 100 - MARGIN - box_metrics[:box_width]
+        pos = 100 - margin - box_metrics[:box_width]
 
         attributes << "align:start"
         attributes << "position:#{pos}%"
