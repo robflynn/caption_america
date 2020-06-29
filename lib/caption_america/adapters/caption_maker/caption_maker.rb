@@ -94,7 +94,9 @@ module CaptionAmerica
         end
         next if skip
 
-        captions << parse_subtitle_record(match["block"])
+        parsed_caption = parse_subtitle_record(match["block"])
+
+        captions << parsed_caption
       end
 
       calculate_out_times(captions)
@@ -165,7 +167,7 @@ private
         len = buffer.uint16
       end
 
-      # The caption text, unliked the timecode, is stored as an array of bytes
+      # The caption text, unlike the timecode, is stored as an array of bytes
       # Since we're mapping this, we'll force an array even on single reads.
       raw_text = buffer.uint8(count: len, array: true)
                        .map(&:chr)
@@ -173,9 +175,11 @@ private
 
       # Normalize the music note
       raw_text = raw_text.unpack('C*').pack('U*')
-      raw_text.gsub!("§", "♪")
 
       text = styled_text(raw_text)
+
+      text.gsub!("§", "♪")
+
       plain_text = plain_text(text)
 
       # Assemble the cue data

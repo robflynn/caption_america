@@ -59,4 +59,12 @@ describe 'CaptionMaker' do
 
     assert_operator in_frame_time, :<=, out_frame_time
   end
+
+  it "Should be able to parse music notes in rtf text" do
+    captions = CaptionAmerica.read(fixture("13062_Zoobabu_Swan_Spanish.cap"))
+
+    caption = captions[2]
+
+    assert_equal("♪", caption.plain_text)
+  end
 end
