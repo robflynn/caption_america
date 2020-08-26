@@ -67,4 +67,12 @@ describe 'CaptionMaker' do
 
     assert_equal("♪", caption.plain_text)
   end
+
+  it 'Does not erroneously drop some captions' do
+    c1 = CaptionAmerica.read(fixture("microworlds.vtt"))
+    c2 = CaptionAmerica.read(fixture("microworlds.cap"))
+
+    assert_equal(c1.length, c2.length)
+  end
+
 end
