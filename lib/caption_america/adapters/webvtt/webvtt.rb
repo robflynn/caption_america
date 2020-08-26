@@ -48,7 +48,9 @@ module CaptionAmerica
     end
 
     def read
-      data = File.read(self.filepath)
+      file = File.open(self.filepath, "r:bom|utf-8")
+      data = file.read
+      file.close
 
       WebVTT::fromString(data)
     end
