@@ -11,6 +11,8 @@ module CaptionAmerica
     BOX_PADDING = 10
 
     def self.generate(captions, margin: MARGIN)
+      @canvas = nil
+
       chunks = []
 
       captions.each do |caption|
@@ -184,7 +186,6 @@ module CaptionAmerica
       [in_time, out_time]
     end
 
-
     def self.get_metrics_if_needed(caption)
       measure = true
 
@@ -198,8 +199,10 @@ module CaptionAmerica
       return if caption.blank?
       return if measure == false
 
-      canvas = ImageList.new
-      canvas.new_image(WIDTH, HEIGHT, HatchFill.new('white', 'gray90'))
+      if @canvas.nil?
+        @canvas = ImageList.new
+        @canvas.new_image(WIDTH, HEIGHT, HatchFill.new('white', 'gray90'))
+      end
 
       label = Draw.new
 
