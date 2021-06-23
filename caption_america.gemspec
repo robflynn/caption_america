@@ -27,5 +27,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'nokogiri'
   s.add_development_dependency 'memoist'
   s.add_development_dependency 'rmagick'
-  s.add_development_dependency 'bindata', '~> 1.8.0'
+  s.add_development_dependency 'bindata', '~> 2.4.10'
 end

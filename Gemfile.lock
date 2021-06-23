@@ -6,7 +6,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    bindata (1.8.3)
+    bindata (2.4.10)
     hex_string (1.0.1)
     memoist (0.16.2)
     mini_portile2 (2.4.0)
@@ -24,7 +24,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bindata (~> 1.8.0)
+  bindata (~> 2.4.10)
   bundler (~> 1.7)
   caption_america!
   hex_string
