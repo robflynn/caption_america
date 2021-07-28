@@ -22,10 +22,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", "~> 10.0"
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'rack-test'
-  s.add_development_dependency 'hex_string'
-  s.add_development_dependency 'ruby-rtf'
+  s.add_dependency 'hex_string'
+  s.add_dependency 'ruby-rtf'
   s.add_development_dependency 'nokogiri'
-  s.add_development_dependency 'memoist'
-  s.add_development_dependency 'rmagick'
-  s.add_development_dependency 'bindata', '~> 1.8.0'
+  s.add_dependency 'memoist'
+  s.add_dependency 'rmagick'
 end

@@ -1,6 +1,3 @@
-require 'bindata'
-
-
 module CaptionAmerica
   class InvalidTimestampError < StandardError; end
   class UnknownCaptionFormatError < StandardError; end
