@@ -1,12 +1,15 @@
 PATH
   remote: .
   specs:
-    caption_america (0.0.9)
+    caption_america (0.0.10)
+      hex_string
+      memoist
+      rmagick
+      ruby-rtf
 
 GEM
   remote: https://rubygems.org/
   specs:
-    bindata (1.8.3)
     hex_string (1.0.1)
     memoist (0.16.2)
     mini_portile2 (2.4.0)
@@ -17,24 +20,19 @@ GEM
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (10.5.0)
-    rmagick (4.1.2)
+    rmagick (4.2.2)
     ruby-rtf (0.0.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  bindata (~> 1.8.0)
   bundler (~> 1.7)
   caption_america!
-  hex_string
-  memoist
   minitest
   nokogiri
   rack-test
   rake (~> 10.0)
-  rmagick
-  ruby-rtf
 
 BUNDLED WITH
    1.17.3

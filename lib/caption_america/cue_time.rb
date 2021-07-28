@@ -48,6 +48,15 @@ module CaptionAmerica
       ms.round
     end
 
+    def self.to_timecode(ms)
+      time = ms.to_f
+      msec = "%.3d" % (time % 1000)
+      time /= 1000
+      time_list = []
+      3.times { time_list.unshift("%.2d" % (time % 60)) ; time /= 60 }
+      [ time_list.join(":"), msec].join(',')
+    end
+
     def self.to_frames(timecode, drop_frame: true, fps: DEFAULT_FPS)
       cue = self.parse(timecode)
 
