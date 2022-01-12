@@ -12,7 +12,7 @@ module CaptionAmerica
 
     def initialize
       @hours = 0
-      @mintes = 0
+      @minutes = 0
       @seconds = 0
       @milliseconds = 0
       @frames = 0
