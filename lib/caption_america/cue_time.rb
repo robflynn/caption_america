@@ -4,6 +4,7 @@ module CaptionAmerica
       /^(?<hours>\d{2})[:,;](?<minutes>\d{2})[:,;](?<seconds>\d{2})[:,;](?<frames>\d{2})$/,
       /^(?<hours>\d{2})[:,;](?<minutes>\d{2})[:,;](?<seconds>\d{2})$/,
       /^(?<hours>\d{2})[:,;](?<minutes>\d{2})[:,;](?<seconds>\d{2})\.(?<ms>\d{3})$/,
+      /^(?<hours>\d{2})[:,;](?<minutes>\d{2})[:,;](?<seconds>\d{2}),(?<ms>\d{3})$/
     ]
 
     DEFAULT_FPS = 29.97

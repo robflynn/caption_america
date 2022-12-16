@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    caption_america (0.0.10)
+    caption_america (0.0.12)
       hex_string
       memoist
       rmagick
@@ -20,7 +20,7 @@ GEM
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (10.5.0)
-    rmagick (4.2.2)
+    rmagick (4.3.0)
     ruby-rtf (0.0.5)
 
 PLATFORMS

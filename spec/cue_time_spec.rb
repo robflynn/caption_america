@@ -24,6 +24,11 @@ describe 'CueTime' do
     assert_equal(1250, ms)
   end
 
+  it 'should convert timecodes in the format of HH:MM:SS,MMM to milliseconds' do
+    ms = CaptionAmerica::CueTime.to_milliseconds("00:00:01,250")
+    assert_equal(1250, ms)
+  end
+
   it 'should convert timecodes in the format of HH:MM:SS to milliseconds' do
     ms = CaptionAmerica::CueTime.to_milliseconds("00:03:12")
     assert_equal(192000, ms)

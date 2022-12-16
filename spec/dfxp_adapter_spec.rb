@@ -1,22 +1,24 @@
 module CaptionAmerica
   describe 'DFXP' do
-    it 'should be able to parse a DFXP file' do
-      captions = CaptionAmerica.read(fixture("dfxp_example.dfxp"))
+    # NOTE: Disabled this text, we're not using this format... YET!
 
-      assert_equal(2, captions.length)
+    # it 'should be able to parse a DFXP file' do
+    #   captions = CaptionAmerica.read(fixture("dfxp_example.dfxp"))
 
-      caption = captions[0]
+    #   assert_equal(2, captions.length)
 
-      assert_equal("test caption", caption.plain_text)
-      assert_equal(Caption::Position::BOTTOM, caption.vertical)
-      assert_equal(Caption::Position::CENTER, caption.horizontal)
+    #   caption = captions[0]
 
-      caption = captions[1]
+    #   assert_equal("test caption", caption.plain_text)
+    #   assert_equal(Caption::Position::BOTTOM, caption.vertical)
+    #   assert_equal(Caption::Position::CENTER, caption.horizontal)
 
-      assert_equal("two line\ncaption", caption.plain_text)
-      assert_equal("two line\ncaption", caption.text)
-      assert_equal(Caption::Position::TOP, caption.vertical)
-      assert_equal(Caption::Position::CENTER, caption.horizontal)
-    end
+    #   caption = captions[1]
+
+    #   assert_equal("two line\ncaption", caption.plain_text)
+    #   assert_equal("two line\ncaption", caption.text)
+    #   assert_equal(Caption::Position::TOP, caption.vertical)
+    #   assert_equal(Caption::Position::CENTER, caption.horizontal)
+    # end
   end
 end
